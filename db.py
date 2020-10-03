@@ -30,8 +30,8 @@ class GroupMessage(Base):
         'groups.id'), nullable=False)
     time = Column('time', Time, nullable=False)
 
-    message = relationship(Message, backref=backref('messages', uselist=True))
-    group = relationship(Group, backref=backref('groups', uselist=True))
+    message = relationship(Message, lazy="joined", backref=backref('messages', uselist=True))
+    group = relationship(Group, lazy="joined", backref=backref('groups', uselist=True))
 
 
 engine = create_engine('sqlite:///database.sqlite', echo=True)
