@@ -1,7 +1,9 @@
 from sqlalchemy import or_
 from datetime import datetime
+from sqlalchemy.orm import joinedload
 from sqlalchemy.orm.exc import NoResultFound
 from db import Group, Message, GroupMessage, Session
+
 
 class BaseRepository:
     def get(self, model, id):
@@ -43,6 +45,7 @@ class BaseRepository:
         s.commit()
         s.close()
 
+
 class MessageRepository(BaseRepository):
     def create(self, link):
         m = Message(link=link)
@@ -68,6 +71,17 @@ class GroupRepository(BaseRepository):
 
 
 class GroupMessageRepository(BaseRepository):
+    def get_scheduled_messages_to_current_time(self):
+        s = Session()
+        time = self.get_current_time()
+        messages = s.query(GroupMessage).filter(
+            GroupMessage.time == time).options(joinedload(GroupMessage.message), joinedload(GroupMessage.group)).all()
+        s.close()
+        return messages
+
+    def get_current_time(self):
+        return datetime.now().time().strftime('%H:%M') + ':00.000000'
+
     def create(self, message_id, group_id, time):
         m = GroupMessage(message_id=message_id, group_id=group_id, time=time)
         super().create(m)
