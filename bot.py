@@ -6,8 +6,8 @@ from telegram.ext import Updater
 from telegram.ext import Filters
 from telegram.ext import CommandHandler
 from telegram.ext import MessageHandler
+from repository import GroupRepository
 from repository import MessageRepository
-from repository import GroupMessageRepository
 from repository import GroupMessageRepository
 
 TOKEN = config('TOKEN')
@@ -36,6 +36,7 @@ def new_member(update, context):
 def send_scheduled_messages():
     # TODO
     # Ex: dispatcher.bot.send_message(chat_id='-441809317', text='Hi there', disable_web_page_preview=False)
+    pass
 
 ### Setup schedule
 # Sends scheduled messages to the current time
