@@ -47,12 +47,12 @@ class BaseRepository:
 
 
 class MessageRepository(BaseRepository):
-    def create(self, link):
-        m = Message(link=link)
+    def create(self, content):
+        m = Message(content=content)
         super().create(m)
 
-    def update(self, id, link):
-        super().update(Message, id, {'link': link})
+    def update(self, id, content):
+        super().update(Message, id, {'content': content})
 
     def delete(self, id):
         super().delete(Message, id)
@@ -73,14 +73,14 @@ class GroupRepository(BaseRepository):
 class GroupMessageRepository(BaseRepository):
     def get_scheduled_messages_to_current_time(self):
         s = Session()
-        time = self.get_current_time()
+        date_time = self.get_current_date_time()
         messages = s.query(GroupMessage).filter(
-            GroupMessage.time == time).options(joinedload(GroupMessage.message), joinedload(GroupMessage.group)).all()
+            GroupMessage.date_time == date_time).options(joinedload(GroupMessage.message), joinedload(GroupMessage.group)).all()
         s.close()
         return messages
 
-    def get_current_time(self):
-        return datetime.now().time().strftime('%H:%M') + ':00.000000'
+    def get_current_date_time(self):
+        return datetime.now().strftime("%Y-%m-%d %H:%M:") + "00"
 
     def create(self, message_id, group_id, time):
         m = GroupMessage(message_id=message_id, group_id=group_id, time=time)

@@ -38,7 +38,7 @@ def send_scheduled_messages(context):
     scheduled_messages = group_message_repository.get_scheduled_messages_to_current_time()
     for scheduled_message in scheduled_messages:
         context.bot.send_message(chat_id=scheduled_message.group.telegram_id,
-                                    text=scheduled_message.message.link, disable_web_page_preview=False)
+                                    text=scheduled_message.message.content, disable_web_page_preview=False)
 
 
 # - Setup job queue
