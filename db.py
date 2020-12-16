@@ -3,14 +3,14 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import ForeignKey, PrimaryKeyConstraint
-from sqlalchemy import Column, DateTime, String, Integer, Time
+from sqlalchemy import Column, DateTime, String, Integer
 
 Base = declarative_base()
 
 class Message(Base):
     __tablename__ = 'messages'
     id = Column('id', Integer, primary_key=True)
-    link = Column('link', String, nullable=False, unique=True)
+    content = Column('content', String, nullable=False, unique=True)
 
 
 class Group(Base):
@@ -28,7 +28,7 @@ class GroupMessage(Base):
         'messages.id'), nullable=False)
     group_id = Column('group_id', Integer, ForeignKey(
         'groups.id'), nullable=False)
-    time = Column('time', Time, nullable=False)
+    date_time = Column('date_time', DateTime, nullable=False)
 
     message = relationship(Message, lazy="joined", backref=backref('messages', uselist=True))
     group = relationship(Group, lazy="joined", backref=backref('groups', uselist=True))
