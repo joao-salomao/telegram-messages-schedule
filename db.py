@@ -1,12 +1,18 @@
+import enum
 from decouple import config
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm import relationship, backref, joinedload
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import ForeignKey, PrimaryKeyConstraint, ForeignKeyConstraint
-from sqlalchemy import Column, DateTime, String, Integer
+from sqlalchemy import Column, DateTime, String, Integer, Enum
 
 Base = declarative_base()
+
+
+class MessageStatus(enum.Enum):
+    pending = 'pending'
+    sent = 'sent'
 
 
 class Group(Base):
@@ -24,6 +30,8 @@ class Message(Base):
     id = Column('id', Integer, primary_key=True)
     title = Column('title', String(255), nullable=False)
     content = Column('content', String(255), nullable=False)
+    status = Column('status', Enum(MessageStatus),
+                    default=MessageStatus.pending)
     date_time = Column('date_time', String, nullable=False)
 
     groups = relationship('Group', secondary='groups_messages')
