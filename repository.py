@@ -57,6 +57,18 @@ class MessageRepository(BaseRepository):
     def delete(self, id):
         super().delete(Message, id)
 
+    def get_scheduled_messages_to_current_time(self):
+        s = Session()
+        date_time = self.get_current_date_time()
+
+        messages = s.query(Message).filter(Message.date_time ==date_time).options(joinedload(Message.groups)).all()
+        
+        s.close()
+        return messages
+
+    def get_current_date_time(self):
+        return datetime.now().strftime("%Y-%m-%d %H:%M")
+
 
 class GroupRepository(BaseRepository):
     def create(self, name, telegram_id):
@@ -71,17 +83,6 @@ class GroupRepository(BaseRepository):
 
 
 class GroupMessageRepository(BaseRepository):
-    def get_scheduled_messages_to_current_time(self):
-        s = Session()
-        date_time = self.get_current_date_time()
-        messages = s.query(GroupMessage).filter(
-            GroupMessage.date_time == date_time).options(joinedload(GroupMessage.message), joinedload(GroupMessage.group)).all()
-        s.close()
-        return messages
-
-    def get_current_date_time(self):
-        return datetime.now().strftime("%Y-%m-%d %H:%M:") + "00"
-
     def create(self, message_id, group_id, time):
         m = GroupMessage(message_id=message_id, group_id=group_id, time=time)
         super().create(m)
