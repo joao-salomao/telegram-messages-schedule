@@ -27,7 +27,7 @@ message_repository = MessageRepository()
 group_message_repository = GroupMessageRepository()
 
 
-def new_member(update, context):
+def on_add_new_member(update, context):
     for member in update.message.new_chat_members:
         if member.username == BOT_NAME:
             group_repository.create(
@@ -56,7 +56,7 @@ job_queue.run_repeating(send_scheduled_messages, interval=60, first=0)
 # When the bot is added to any group, the
 # group must be registered in the database
 dispatcher.add_handler(MessageHandler(
-    Filters.status_update.new_chat_members, new_member))
+    Filters.status_update.new_chat_members, on_add_new_member))
 
 # Update group title on database when changes
 dispatcher.add_handler(MessageHandler(
