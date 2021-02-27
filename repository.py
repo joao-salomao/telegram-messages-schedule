@@ -61,8 +61,9 @@ class MessageRepository(BaseRepository):
         s = Session()
         date_time = self.get_current_date_time()
 
-        messages = s.query(Message).filter(Message.date_time ==date_time).options(joinedload(Message.groups)).all()
-        
+        messages = s.query(Message).filter(Message.date_time == date_time).options(
+            joinedload(Message.groups)).all()
+
         s.close()
         return messages
 
@@ -74,6 +75,12 @@ class GroupRepository(BaseRepository):
     def create(self, name, telegram_id):
         m = Group(name=name, telegram_id=telegram_id)
         super().create(m)
+
+    def get_group_by_telegram_id(self, telegram_id):
+        s = Session()
+        group = s.query(Group).filter(Group.telegram_id == telegram_id).one()
+        s.close()
+        return group
 
     def update(self, id, name, telegram_id):
         super().update(Group, id, {'name': name, 'telegram_id': telegram_id})
