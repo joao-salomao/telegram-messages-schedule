@@ -42,6 +42,12 @@ def send_scheduled_messages(context):
                 chat_id=group.telegram_id, text=message.content, disable_web_page_preview=False)
 
 
+def on_update_chat_title(update, context):
+    telegram_id = update.message.chat.id
+    group = group_repository.get_group_by_telegram_id(telegram_id)
+    group_repository.update(group.id, update.message.chat.title, telegram_id)
+
+
 # - Setup job queue
 # Sends scheduled messages to the current time
 job_queue.run_repeating(send_scheduled_messages, interval=60, first=0)
@@ -52,6 +58,10 @@ job_queue.run_repeating(send_scheduled_messages, interval=60, first=0)
 dispatcher.add_handler(MessageHandler(
     Filters.status_update.new_chat_members, new_member))
 
+# Update group title on database when changes
+dispatcher.add_handler(MessageHandler(
+    Filters.status_update.new_chat_title, on_update_chat_title))
+
 # - Watch telegram updates
 updater.start_polling()
-updater.idle()
+# updater.idle()
