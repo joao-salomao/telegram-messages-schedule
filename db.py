@@ -10,11 +10,6 @@ from sqlalchemy import Column, DateTime, String, Integer, Enum
 Base = declarative_base()
 
 
-class MessageStatus(enum.Enum):
-    pending = 'pending'
-    sent = 'sent'
-
-
 class Group(Base):
     __tablename__ = 'groups'
     id = Column('id', Integer, primary_key=True)
@@ -30,8 +25,6 @@ class Message(Base):
     id = Column('id', Integer, primary_key=True)
     title = Column('title', String(255), nullable=False)
     content = Column('content', String(255), nullable=False)
-    status = Column('status', Enum(MessageStatus),
-                    default=MessageStatus.pending)
     date_time = Column('date_time', String, nullable=False)
 
     groups = relationship('Group', secondary='groups_messages')
